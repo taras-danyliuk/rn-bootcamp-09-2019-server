@@ -9,6 +9,19 @@ router.get("/:id", (req, res) => {
   })
 });
 
+// Registration
+router.post("/register", (req, res) => {
+  User.create(req.body)
+    .then(result => {
+      res.send({ status: "created", id: result._id });
+    })
+    .catch(err => {
+      res.status(400);
+      res.send({ status: "error", error: err });
+    })
+});
+
+// Update
 router.put("/", async(req, res) => {
   try {
     const targetId = req.body.id;
@@ -33,18 +46,6 @@ router.patch("/", async(req, res) => {
     res.status(400);
     res.send({ status: "error", error: err });
   }
-});
-
-// Registration
-router.post("/register", (req, res) => {
-  User.create(req.body)
-    .then(result => {
-      res.send({ status: "created", id: result._id });
-    })
-    .catch(err => {
-      res.status(400);
-      res.send({ status: "error", error: err });
-    })
 });
 
 // Authentification

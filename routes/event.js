@@ -20,7 +20,7 @@ router.get("/:id", async (req, res) => {
   res.send({ status: "error", error: "not-found" });
 });
 
-// Registration
+// Create
 router.post("/", async (req, res) => {
   try {
     const result = await Event.create(req.body);

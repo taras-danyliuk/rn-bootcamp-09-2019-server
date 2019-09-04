@@ -24,9 +24,9 @@ router.post("/register", (req, res) => {
 // Update
 router.put("/", async(req, res) => {
   try {
-    const targetId = req.body.id;
+    const targetId = req.body.userId;
 
-    const result = await User.updateOne({ _id: targetId }, req.body);
+    const result = await User.updateOne({ _id: targetId }, req.body.user);
     res.send({ status: "updated", id: targetId });
   }
   catch (err) {
@@ -37,9 +37,9 @@ router.put("/", async(req, res) => {
 
 router.patch("/", async(req, res) => {
   try {
-    const targetId = req.body.id;
+    const targetId = req.body.userId;
 
-    const result = await User.updateOne({ _id: targetId }, req.body);
+    const result = await User.updateOne({ _id: targetId }, req.body.user);
     res.send({ status: "updated", id: targetId });
   }
   catch (err) {

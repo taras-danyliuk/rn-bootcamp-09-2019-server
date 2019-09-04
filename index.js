@@ -1,8 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const cors = require("cors");
-const http = require("http");
+const cors = require("cors");;
 const socketIO = require("socket.io");
 
 const userRouter = require("./routes/user");
@@ -10,8 +9,6 @@ const eventRouter = require("./routes/event");
 
 
 const app = express();
-const httpServer = http.Server(app);
-const io = socketIO(httpServer);
 const port = process.env.PORT || 8080;
 const dbPath = "mongodb://coax-bootcamp-admin:CO888777ax@ds143262.mlab.com:43262/rn-bootcamp-09-2019";
 
@@ -27,11 +24,13 @@ app.use("/api/event", eventRouter);
 
 
 // Start server
-app.listen(port, () => {
+const httpServer = app.listen(port, () => {
   console.log("Server is listening");
 });
 
+
 // Start socket
+const io = socketIO(httpServer);
 io.on("connection", function() {
   console.log("a user is connected")
 });

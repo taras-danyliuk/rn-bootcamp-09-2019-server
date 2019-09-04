@@ -11,7 +11,7 @@ router.get("/:id", (req, res) => {
 
 router.put("/", async(req, res) => {
   try {
-    const targetId = req.body._id;
+    const targetId = req.body.id;
 
     const result = await User.updateOne({ _id: targetId }, req.body);
     res.send({ status: "updated", id: targetId });
@@ -24,7 +24,7 @@ router.put("/", async(req, res) => {
 
 router.patch("/", async(req, res) => {
   try {
-    const targetId = req.body._id;
+    const targetId = req.body.id;
 
     const result = await User.updateOne({ _id: targetId }, req.body);
     res.send({ status: "updated", id: targetId });

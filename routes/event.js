@@ -2,11 +2,19 @@ const router = require("express").Router();
 
 const Event = require("../models/event");
 
+router.get("/", async (req, res) => {
+  const allEvents = await Event.find().exec();
+
+  if (allEvents) return res.send({ status: "success", allEvents });
+
+  res.status(400);
+  res.send({ status: "error", error: "not-found" });
+});
 
 router.get("/:id", async (req, res) => {
-  const user = await Event.findOne({ _id: req.params.id }).exec();
+  const event = await Event.findOne({ _id: req.params.id }).exec();
 
-  if (user) return res.send({ status: "success", user });
+  if (event) return res.send({ status: "success", event });
 
   res.status(400);
   res.send({ status: "error", error: "not-found" });
@@ -27,9 +35,16 @@ router.post("/", async (req, res) => {
 
 router.put("/", async(req, res) => {
   try {
-    const targetId = req.body._id;
+    const targetId = req.body.id;
+    const currentUserId = req.body.userId;
 
-    const result = await Event.updateOne({ _id: targetId }, req.body);
+    const targetEvent = await Event.findOne({ _id: targetId }).exec();
+    if (targetEvent.ownerId !== currentUserId) {
+      res.status(401);
+      return res.send({ status: "error", error: "you are not allowed to do that"})
+    }
+
+    const result = await Event.updateOne({ _id: targetId }, req.body.event);
     res.send({ status: "updated", id: targetId });
   }
   catch (err) {
@@ -40,10 +55,37 @@ router.put("/", async(req, res) => {
 
 router.patch("/", async(req, res) => {
   try {
-    const targetId = req.body._id;
+    const targetId = req.body.id;
+    const currentUserId = req.body.userId;
 
-    const result = await Event.updateOne({ _id: targetId }, req.body);
+    const targetEvent = await Event.findOne({ _id: targetId }).exec();
+    if (targetEvent.ownerId !== currentUserId) {
+      res.status(401);
+      return res.send({ status: "error", error: "you are not allowed to do that"})
+    }
+
+    const result = await Event.updateOne({ _id: targetId }, req.body.event);
     res.send({ status: "updated", id: targetId });
+  }
+  catch (err) {
+    res.status(400);
+    res.send({ status: "error", error: err });
+  }
+});
+
+router.delete("/", async(req, res) => {
+  try {
+    const targetId = req.body.id;
+    const currentUserId = req.body.userId;
+
+    const targetEvent = await Event.findOne({ _id: targetId }).exec();
+    if (targetEvent.ownerId !== currentUserId) {
+      res.status(401);
+      return res.send({ status: "error", error: "you are not allowed to do that"})
+    }
+
+    await Event.deleteOne({ _id: targetId });
+    res.send({ status: "deleted", id: targetId });
   }
   catch (err) {
     res.status(400);

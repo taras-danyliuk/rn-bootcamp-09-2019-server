@@ -14,7 +14,7 @@ router.post("/upload", async(req, res) => {
     const imageFile = req.files.image;
     const result = await cloudinary.uploader.upload(imageFile.tempFilePath, { tags: "rn-bootcamp-09-2019" });
 
-    fs.unlink(imageFile.tempFilePath);
+    fs.unlink(imageFile.tempFilePath, () => {});
 
     //send response
     res.send({
